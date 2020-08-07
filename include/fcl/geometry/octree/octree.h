@@ -46,6 +46,7 @@
 #include <array>
 
 #include <octomap/octomap.h>
+#include <octomap/ColorOcTree.h>
 #include "fcl/math/bv/AABB.h"
 #include "fcl/geometry/shape/box.h"
 #include "fcl/narrowphase/collision_object.h"
@@ -64,7 +65,7 @@ template <typename S>
 class FCL_EXPORT OcTree : public CollisionGeometry<S>
 {
 private:
-  std::shared_ptr<const octomap::OcTree> tree;
+  std::shared_ptr<const octomap::ColorOcTree> tree;
 
   S default_occupancy;
 
@@ -73,13 +74,13 @@ private:
 
 public:
 
-  typedef octomap::OcTreeNode OcTreeNode;
+  typedef octomap::ColorOcTreeNode OcTreeNode;
 
   /// @brief construct octree with a given resolution
   OcTree(S resolution);
 
   /// @brief construct octree from octomap
-  OcTree(const std::shared_ptr<const octomap::OcTree>& tree_);
+  OcTree(const std::shared_ptr<const octomap::ColorOcTree>& tree_);
 
   /// @brief compute the AABB<S> for the octree in its local coordinate system
   void computeLocalAABB();
@@ -182,7 +183,7 @@ private:
   bool getOctomapIterator(
       intptr_t id,
       const Vector3<S>& point,
-      octomap::OcTree::leaf_bbx_iterator* out) const;
+      octomap::ColorOcTree::leaf_bbx_iterator* out) const;
 };
 
 using OcTreef = OcTree<float>;

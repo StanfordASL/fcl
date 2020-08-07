@@ -60,7 +60,7 @@ void computeChildBV(const AABB<double>& root_bv, unsigned int i, AABB<double>& c
 //==============================================================================
 template <typename S>
 OcTree<S>::OcTree(S resolution)
-  : tree(std::shared_ptr<const octomap::OcTree>(new octomap::OcTree(resolution)))
+  : tree(std::shared_ptr<const octomap::ColorOcTree>(new octomap::ColorOcTree(resolution)))
 {
   default_occupancy = tree->getOccupancyThres();
 
@@ -71,7 +71,7 @@ OcTree<S>::OcTree(S resolution)
 
 //==============================================================================
 template <typename S>
-OcTree<S>::OcTree(const std::shared_ptr<const octomap::OcTree>& tree_)
+OcTree<S>::OcTree(const std::shared_ptr<const octomap::ColorOcTree>& tree_)
   : tree(tree_)
 {
   default_occupancy = tree->getOccupancyThres();
@@ -307,7 +307,7 @@ const typename OcTree<S>::OcTreeNode* OcTree<S>::getNodeByQueryCellId(
     octomap::OcTreeKey* key,
     unsigned int* depth) const
 {
-  octomap::OcTree::leaf_bbx_iterator it;
+  octomap::ColorOcTree::leaf_bbx_iterator it;
   if (!getOctomapIterator(id, point, &it))
   {
     return nullptr;
@@ -332,7 +332,7 @@ template <typename S>
 bool OcTree<S>::getOctomapIterator(
     intptr_t id,
     const Vector3<S>& point,
-    octomap::OcTree::leaf_bbx_iterator* out) const
+    octomap::ColorOcTree::leaf_bbx_iterator* out) const
 {
   assert(out != nullptr);
   // The octomap tree structure provides no way to find a node from its pointer
@@ -354,9 +354,9 @@ bool OcTree<S>::getOctomapIterator(
     max_key[i] = (point_key[i] < std::numeric_limits<octomap::key_type>::max() ?
         point_key[i] + 1 : point_key[i]);
   }
-  octomap::OcTree::leaf_bbx_iterator it = tree->begin_leafs_bbx(
+  octomap::ColorOcTree::leaf_bbx_iterator it = tree->begin_leafs_bbx(
       min_key, max_key);
-  const octomap::OcTree::leaf_bbx_iterator end = tree->end_leafs_bbx();
+  const octomap::ColorOcTree::leaf_bbx_iterator end = tree->end_leafs_bbx();
   const OcTreeNode* const node = getRoot() + id;
   // While it may appear like this loop could take forever, in reality it will
   // only take a few iterations. Octomap iterators use a fixed end iterator
